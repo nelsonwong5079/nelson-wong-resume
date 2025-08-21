@@ -5,7 +5,7 @@ class ResumeData {
     address: 'No. 33, 2/13 Jalan Sungai Besi Indah, Taman Sungai Besi Indah, 43300, Selangor, Malaysia',
     phone: '014-3246177',
     email: 'wkarweng@icloud.com',
-    github: 'nelsonwong97',
+    github: 'nelsonwong5079',
     linkedin: 'wong-kar-weng-b53821223',
   );
 
