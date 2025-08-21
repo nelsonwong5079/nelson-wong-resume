@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:animated_text_kit/animated_text_kit.dart';
 import '../models/resume_data.dart';
 
 class HeaderSection extends StatefulWidget {
@@ -168,20 +167,14 @@ class _HeaderSectionState extends State<HeaderSection>
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 12),
-                        AnimatedTextKit(
-                          animatedTexts: [
-                            TypewriterAnimatedText(
-                              widget.personalInfo.title,
-                              textStyle: GoogleFonts.inter(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.white.withOpacity(0.9),
-                              ),
-                              speed: const Duration(milliseconds: 100),
-                            ),
-                          ],
-                          totalRepeatCount: 1,
-                          displayFullTextOnTap: true,
+                        Text(
+                          widget.personalInfo.title,
+                          style: GoogleFonts.inter(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white.withOpacity(0.9),
+                          ),
+                          textAlign: TextAlign.center,
                         ),
                       ],
                     ),
