@@ -21,26 +21,33 @@ class _HeaderSectionState extends State<HeaderSection>
   late AnimationController _avatarController;
   late AnimationController _textController;
   late AnimationController _buttonController;
+  late AnimationController _backgroundController;
   late Animation<double> _avatarAnimation;
   late Animation<double> _textAnimation;
   late Animation<double> _buttonAnimation;
+  late Animation<double> _backgroundAnimation;
 
   @override
   void initState() {
     super.initState();
     
     _avatarController = AnimationController(
-      duration: const Duration(milliseconds: 1200),
+      duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
     
     _textController = AnimationController(
-      duration: const Duration(milliseconds: 1000),
+      duration: const Duration(milliseconds: 1200),
       vsync: this,
     );
     
     _buttonController = AnimationController(
-      duration: const Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 1000),
+      vsync: this,
+    );
+
+    _backgroundController = AnimationController(
+      duration: const Duration(milliseconds: 2000),
       vsync: this,
     );
 
@@ -68,16 +75,26 @@ class _HeaderSectionState extends State<HeaderSection>
       curve: Curves.easeOutBack,
     ));
 
+    _backgroundAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _backgroundController,
+      curve: Curves.easeInOut,
+    ));
+
     // Start animations with delays
-    Future.delayed(const Duration(milliseconds: 300), () {
+    _backgroundController.forward();
+    
+    Future.delayed(const Duration(milliseconds: 500), () {
       _avatarController.forward();
     });
     
-    Future.delayed(const Duration(milliseconds: 600), () {
+    Future.delayed(const Duration(milliseconds: 800), () {
       _textController.forward();
     });
     
-    Future.delayed(const Duration(milliseconds: 900), () {
+    Future.delayed(const Duration(milliseconds: 1200), () {
       _buttonController.forward();
     });
   }
@@ -87,192 +104,191 @@ class _HeaderSectionState extends State<HeaderSection>
     _avatarController.dispose();
     _textController.dispose();
     _buttonController.dispose();
+    _backgroundController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color(0xFF2E3192),
-            Color(0xFF1BFFFF),
-          ],
-          stops: [0.0, 1.0],
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(32.0),
-        child: Column(
-          children: [
-            const SizedBox(height: 40),
-            
-            // Animated Profile Avatar
-            AnimatedBuilder(
-              animation: _avatarAnimation,
-              builder: (context, child) {
-                return Transform.scale(
-                  scale: _avatarAnimation.value,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.3),
-                          blurRadius: 20,
-                          offset: const Offset(0, 10),
+    return AnimatedBuilder(
+      animation: _backgroundAnimation,
+      builder: (context, child) {
+        return Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                const Color(0xFF2E3192),
+                const Color(0xFF1BFFFF),
+              ],
+              stops: [0.0, _backgroundAnimation.value],
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(40.0),
+            child: Column(
+              children: [
+                const SizedBox(height: 60),
+                
+                // Animated Profile Avatar
+                AnimatedBuilder(
+                  animation: _avatarAnimation,
+                  builder: (context, child) {
+                    return Transform.scale(
+                      scale: _avatarAnimation.value,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.4),
+                              blurRadius: 30,
+                              offset: const Offset(0, 15),
+                            ),
+                            BoxShadow(
+                              color: Colors.white.withOpacity(0.1),
+                              blurRadius: 10,
+                              offset: const Offset(0, 5),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    child: CircleAvatar(
-                      radius: 80,
-                      backgroundColor: Colors.white,
-                      child: Text(
-                        widget.personalInfo.name.split(' ').map((e) => e[0]).join(''),
-                        style: GoogleFonts.inter(
-                          fontSize: 48,
-                          fontWeight: FontWeight.bold,
-                          color: const Color(0xFF2E3192),
+                        child: CircleAvatar(
+                          radius: 90,
+                          backgroundColor: Colors.white,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  const Color(0xFF2E3192),
+                                  const Color(0xFF1BFFFF),
+                                ],
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                widget.personalInfo.name.split(' ').map((e) => e[0]).join(''),
+                                style: GoogleFonts.inter(
+                                  fontSize: 52,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 32),
-            
-            // Animated Name and Title
-            AnimatedBuilder(
-              animation: _textAnimation,
-              builder: (context, child) {
-                return Opacity(
-                  opacity: _textAnimation.value,
-                  child: Transform.translate(
-                    offset: Offset(0, 20 * (1 - _textAnimation.value)),
-                    child: Column(
-                      children: [
-                        Text(
-                          widget.personalInfo.name,
-                          style: GoogleFonts.inter(
-                            fontSize: 36,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            letterSpacing: 1.2,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          widget.personalInfo.title,
-                          style: GoogleFonts.inter(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white.withOpacity(0.9),
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 32),
-            
-            // Animated Address
-            AnimatedBuilder(
-              animation: _textAnimation,
-              builder: (context, child) {
-                return Opacity(
-                  opacity: _textAnimation.value,
-                  child: Transform.translate(
-                    offset: Offset(0, 15 * (1 - _textAnimation.value)),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(25),
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.2),
-                          width: 1,
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.location_on,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                          const SizedBox(width: 8),
-                          Flexible(
-                            child: Text(
-                              widget.personalInfo.address,
+                    );
+                  },
+                ),
+                const SizedBox(height: 40),
+                
+                // Animated Name and Title
+                AnimatedBuilder(
+                  animation: _textAnimation,
+                  builder: (context, child) {
+                    return Opacity(
+                      opacity: _textAnimation.value,
+                      child: Transform.translate(
+                        offset: Offset(0, 30 * (1 - _textAnimation.value)),
+                        child: Column(
+                          children: [
+                            Text(
+                              widget.personalInfo.name,
                               style: GoogleFonts.inter(
-                                fontSize: 16,
-                                color: Colors.white.withOpacity(0.9),
+                                fontSize: 42,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                letterSpacing: 2.0,
+                                shadows: [
+                                  Shadow(
+                                    color: Colors.black.withOpacity(0.3),
+                                    offset: const Offset(0, 2),
+                                    blurRadius: 4,
+                                  ),
+                                ],
                               ),
                               textAlign: TextAlign.center,
                             ),
-                          ),
-                        ],
+                            const SizedBox(height: 16),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(25),
+                                border: Border.all(
+                                  color: Colors.white.withOpacity(0.3),
+                                  width: 1,
+                                ),
+                              ),
+                              child: Text(
+                                widget.personalInfo.title,
+                                style: GoogleFonts.inter(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white,
+                                  letterSpacing: 1.0,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ),
-                );
-              },
+                    );
+                  },
+                ),
+                const SizedBox(height: 50),
+                
+                // Animated Contact Buttons
+                AnimatedBuilder(
+                  animation: _buttonAnimation,
+                  builder: (context, child) {
+                    return Opacity(
+                      opacity: _buttonAnimation.value,
+                      child: Transform.translate(
+                        offset: Offset(0, 40 * (1 - _buttonAnimation.value)),
+                        child: Wrap(
+                          spacing: 20,
+                          runSpacing: 20,
+                          alignment: WrapAlignment.center,
+                          children: [
+                            _buildContactButton(
+                              icon: Icons.email,
+                              label: 'Email',
+                              onTap: () => widget.onContactTap('email'),
+                            ),
+                            _buildContactButton(
+                              icon: Icons.phone,
+                              label: 'Phone',
+                              onTap: () => widget.onContactTap('phone'),
+                            ),
+                            _buildContactButton(
+                              icon: Icons.link,
+                              label: 'GitHub',
+                              onTap: () => widget.onContactTap('github'),
+                            ),
+                            _buildContactButton(
+                              icon: Icons.work,
+                              label: 'LinkedIn',
+                              onTap: () => widget.onContactTap('linkedin'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 60),
+              ],
             ),
-            const SizedBox(height: 40),
-            
-            // Animated Contact Buttons
-            AnimatedBuilder(
-              animation: _buttonAnimation,
-              builder: (context, child) {
-                return Opacity(
-                  opacity: _buttonAnimation.value,
-                  child: Transform.translate(
-                    offset: Offset(0, 30 * (1 - _buttonAnimation.value)),
-                    child: Wrap(
-                      spacing: 16,
-                      runSpacing: 16,
-                      alignment: WrapAlignment.center,
-                      children: [
-                        _buildContactButton(
-                          icon: Icons.email,
-                          label: 'Email',
-                          onTap: () => widget.onContactTap('email'),
-                        ),
-                        _buildContactButton(
-                          icon: Icons.phone,
-                          label: 'Phone',
-                          onTap: () => widget.onContactTap('phone'),
-                        ),
-                        _buildContactButton(
-                          icon: Icons.link,
-                          label: 'GitHub',
-                          onTap: () => widget.onContactTap('github'),
-                        ),
-                        _buildContactButton(
-                          icon: Icons.work,
-                          label: 'LinkedIn',
-                          onTap: () => widget.onContactTap('linkedin'),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 40),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -284,20 +300,26 @@ class _HeaderSectionState extends State<HeaderSection>
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 300),
         child: ElevatedButton.icon(
           onPressed: onTap,
-          icon: Icon(icon, size: 20),
-          label: Text(label),
+          icon: Icon(icon, size: 22),
+          label: Text(
+            label,
+            style: GoogleFonts.inter(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.white,
             foregroundColor: const Color(0xFF2E3192),
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 18),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
+              borderRadius: BorderRadius.circular(35),
             ),
-            elevation: 4,
-            shadowColor: Colors.black.withOpacity(0.2),
+            elevation: 8,
+            shadowColor: Colors.black.withOpacity(0.3),
           ),
         ),
       ),
