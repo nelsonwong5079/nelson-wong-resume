@@ -46,6 +46,15 @@ dependencies:
   
   # For smooth scrolling and animations
   scroll_to_index: ^3.0.1
+  
+  # For advanced animations
+  lottie: ^3.1.2
+  
+  # For animated text effects
+  animated_text_kit: ^4.2.2
+  
+  # For smooth animations
+  flutter_staggered_animations: ^1.1.1
 
 dev_dependencies:
   flutter_test:
@@ -73,6 +82,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/animations/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

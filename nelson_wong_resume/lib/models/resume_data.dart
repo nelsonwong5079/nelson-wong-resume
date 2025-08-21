@@ -156,67 +156,63 @@ Skilled in bridging business, product, and engineering teams to accelerate deliv
   ];
 
   static const Map<String, List<String>> skills = {
-    'API & Integration': [
+    '🔹 技术 (Tech & Tools)': [
+      'API Integration',
+      'Python Automation',
+      'SQL Data Analysis',
+      'Data Visualization (Tableau / Power BI)',
+      'Postman API Testing',
       'RESTful APIs',
-      'Payment APIs (Payin, Payout, Direct Card, Refund, Tokenized)',
-      'Postman',
-      'WebView Flows',
-      'JWT Authentication',
-      'Signature Validation',
-      'Error Handling'
+      'SOAP APIs',
+      'WebView Payment Flow Testing',
+      'System Monitoring (系统监控)',
+      '日志分析与调试 (Log Debugging)',
+      'Error Code Troubleshooting',
+      'UAT (用户验收测试)',
+      'Quality Assurance (QA)',
+      'Automation Scripting',
+      'Technical Documentation',
     ],
-    'Automation': [
-      'Zapier Workflows',
-      'Internal Tooling',
-      'Python scripting for debugging & efficiency'
+    '🔹 金融科技 & 支付 (Fintech & Payments)': [
+      'Payment System Integration',
+      'Payout & Settlement (出入金结算)',
+      'Digital Wallet Integration',
+      'Carrier Billing Solutions',
+      'Payment Gateway Support',
+      'Cross-border Payments',
+      '交易监控 (Transaction Monitoring)',
+      '失败交易分析 (Failed Transaction Analysis)',
+      'Fraud & Risk Management (钓鱼和欺诈处理)',
+      'Chargeback Handling',
+      'Conversion Rate Optimization (CRO)',
+      'FX Handling (外汇处理)',
+      'KYC & Compliance Support',
+      '资金来源证明 (Source of Funds Documentation)',
+      'Merchant Support',
     ],
-    'Data/Analysis': [
-      'SQL (Athena/Metabase)',
-      'Transaction Data Analysis',
-      'Conversion Rate Optimization',
-      'Fraud Detection & Monitoring'
+    '🔹 协作 & 项目管理 (Collaboration & PM)': [
+      'Client Onboarding',
+      'Client Issue Resolution',
+      'Stakeholder Engagement',
+      'Partner Support (合作伙伴支持)',
+      '客户支持升级 (Customer Support Escalation)',
+      'Project Management',
+      '项目交付 (Project Delivery)',
+      '团队协作 (Cross-functional Collaboration)',
+      '团队领导力 (Team Leadership)',
+      '团队发展 (Team Development)',
+      'Problem Solving (问题排除)',
+      'Communication Skills',
+      'Business Process Improvement',
+      'Workflow Automation',
+      'Internal Training & Knowledge Sharing',
     ],
-    'Documentation': [
-      'API Documentation',
-      'Flowcharts',
-      'Sequence Diagrams',
-      'Developer Guides',
-      'Knowledge Base Articles'
-    ],
-    'Programming': [
-      'Flutter (Dart)',
-      '.NET (C#)',
-      'Angular',
-      'SQL',
-      'TypeScript',
-      'Python',
-      'Django',
-      'React Native',
-      'HTML/CSS',
-      'JavaScript',
-      'Java'
-    ],
-    'Tools': [
-      'Postman',
-      'Metabase',
-      'Git',
-      'Firebase',
-      'Jira',
-      'Confluence',
-      'Slack Automation'
-    ],
-    'Soft Skills': [
-      'Leadership & Mentorship',
-      'Cross-Functional Collaboration',
-      'Stakeholder Communication',
-      'Client Engagement (EU, SEA, China)',
-      'Compliance/KYC Handling'
-    ],
-    'Other': [
-      'Software Testing',
-      'UAT Management',
-      'Payment Channel Analysis',
-      'Fast Learner'
+    '🔹 加值技能 (Extra Value)': [
+      'Jira / Confluence',
+      'Git & GitHub',
+      'Cloud Services (AWS RDS, ECS, SQS)',
+      'Flutter Basics (for Payment Flow Testing)',
+      'Technical Support Specialist',
     ],
   };
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import '../models/resume_data.dart';
 
 class ExperienceSection extends StatelessWidget {
@@ -18,156 +19,258 @@ class ExperienceSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Container(
-                width: 4,
-                height: 40,
-                decoration: const BoxDecoration(
-                  color: Color(0xFF2E3192),
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(2),
-                    bottomRight: Radius.circular(2),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 16),
-              Text(
-                'Work Experience',
-                style: GoogleFonts.inter(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: const Color(0xFF2E3192),
-                ),
-              ),
-            ],
-          ),
+          _buildSectionHeader(),
           const SizedBox(height: 32),
-          ...experiences.map((experience) => _buildExperienceCard(experience)).toList(),
+          _buildTimeline(),
         ],
       ),
     );
   }
 
-  Widget _buildExperienceCard(WorkExperience experience) {
+  Widget _buildSectionHeader() {
+    return Row(
+      children: [
+        Container(
+          width: 4,
+          height: 40,
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color(0xFF2E3192), Color(0xFF1BFFFF)],
+            ),
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ),
+        const SizedBox(width: 16),
+        Text(
+          'Work Experience',
+          style: GoogleFonts.inter(
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+            color: const Color(0xFF2E3192),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTimeline() {
+    return AnimationLimiter(
+      child: Column(
+        children: AnimationConfiguration.toStaggeredList(
+          duration: const Duration(milliseconds: 800),
+          childAnimationBuilder: (widget) => SlideAnimation(
+            horizontalOffset: 50.0,
+            child: FadeInAnimation(child: widget),
+          ),
+          children: experiences.asMap().entries.map((entry) {
+            int index = entry.key;
+            WorkExperience experience = entry.value;
+            return _buildExperienceCard(experience, index);
+          }).toList(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildExperienceCard(WorkExperience experience, int index) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 24),
+      margin: const EdgeInsets.only(bottom: 32),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Timeline indicator
-          Container(
-            width: 16,
-            height: 16,
-            decoration: const BoxDecoration(
-              color: Color(0xFF2E3192),
-              shape: BoxShape.circle,
-            ),
-          ),
+          _buildTimelineIndicator(index),
           const SizedBox(width: 16),
           // Timeline line
-          Container(
-            width: 2,
-            height: 120,
-            color: Colors.grey[300],
-          ),
+          _buildTimelineLine(index),
           const SizedBox(width: 16),
           // Experience content
           Expanded(
-            child: Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.1),
-                    spreadRadius: 1,
-                    blurRadius: 10,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              experience.title,
-                              style: GoogleFonts.inter(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: const Color(0xFF2E3192),
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              experience.company,
-                              style: GoogleFonts.inter(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.grey[700],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF2E3192).withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(
-                          experience.period,
-                          style: GoogleFonts.inter(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: const Color(0xFF2E3192),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  ...experience.achievements.map((achievement) => Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.only(top: 8),
-                          width: 6,
-                          height: 6,
-                          decoration: const BoxDecoration(
-                            color: Color(0xFF2E3192),
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            achievement,
-                            style: GoogleFonts.inter(
-                              fontSize: 15,
-                              height: 1.5,
-                              color: Colors.grey[800],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )).toList(),
-                ],
-              ),
-            ),
+            child: _buildExperienceContent(experience),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildTimelineIndicator(int index) {
+    return Container(
+      width: 20,
+      height: 20,
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF2E3192), Color(0xFF1BFFFF)],
+        ),
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF2E3192).withOpacity(0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: const Icon(
+        Icons.work,
+        color: Colors.white,
+        size: 12,
+      ),
+    );
+  }
+
+  Widget _buildTimelineLine(int index) {
+    bool isLast = index == experiences.length - 1;
+    return Container(
+      width: 3,
+      height: isLast ? 0 : 120,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            const Color(0xFF2E3192),
+            const Color(0xFF1BFFFF),
+            if (isLast) Colors.transparent,
+          ],
+        ),
+        borderRadius: BorderRadius.circular(2),
+      ),
+    );
+  }
+
+  Widget _buildExperienceContent(WorkExperience experience) {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 1,
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+        border: Border.all(
+          color: Colors.grey.withOpacity(0.1),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildExperienceHeader(experience),
+          const SizedBox(height: 20),
+          _buildExperienceAchievements(experience),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildExperienceHeader(WorkExperience experience) {
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                experience.title,
+                style: GoogleFonts.inter(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xFF2E3192),
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                experience.company,
+                style: GoogleFonts.inter(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey[700],
+                ),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF2E3192), Color(0xFF1BFFFF)],
+            ),
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF2E3192).withOpacity(0.3),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Text(
+            experience.period,
+            style: GoogleFonts.inter(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildExperienceAchievements(WorkExperience experience) {
+    return AnimationLimiter(
+      child: Column(
+        children: AnimationConfiguration.toStaggeredList(
+          duration: const Duration(milliseconds: 600),
+          childAnimationBuilder: (widget) => SlideAnimation(
+            verticalOffset: 20.0,
+            child: FadeInAnimation(child: widget),
+          ),
+          children: experience.achievements.map((achievement) => Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(top: 8),
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Color(0xFF2E3192), Color(0xFF1BFFFF)],
+                    ),
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Text(
+                    achievement,
+                    style: GoogleFonts.inter(
+                      fontSize: 15,
+                      height: 1.6,
+                      color: Colors.grey[800],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )).toList(),
+        ),
       ),
     );
   }
